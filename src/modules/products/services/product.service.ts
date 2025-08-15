@@ -4,7 +4,7 @@ import { ProductRepository } from '@products/repositories';
 @Injectable()
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
-  public getHello(): string {
+  getHello = (): string => {
     return 'Hello World from Products!';
-  }
+  };
 }

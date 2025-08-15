@@ -29,6 +29,6 @@ export class Product {
   @Column('int', { nullable: false })
   stock: number;
 
-  @Column('bool', { nullable: false, name: 'is_active', default: true })
+  @Column('boolean', { nullable: false, name: 'is_active', default: true })
   isActive: boolean;
 }
