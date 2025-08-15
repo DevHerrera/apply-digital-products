@@ -22,7 +22,9 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@products/*": ["src/products/*"]
+      "@products/*": ["src/modules/products/*"],
+      "@config/*": ["src/config/*"],
+      "@database/*": ["src/modules/database/*"]
     }
   }
 }
