@@ -5,30 +5,30 @@ export class Product {
   @PrimaryColumn({ unique: true })
   sku: string;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
 
-  @Column()
+  @Column({ nullable: false })
   brand: string;
 
-  @Column()
+  @Column({ nullable: false })
   model: string;
 
-  @Column()
+  @Column({ nullable: false })
   category: string;
 
-  @Column()
+  @Column({ nullable: false })
   color: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { nullable: false, precision: 10, scale: 2 })
   price: number;
 
   @Column({ length: 3 })
   currency: string;
 
-  @Column('int')
+  @Column('int', { nullable: false })
   stock: number;
 
-  @Column('bool', { name: 'is_active', default: true })
+  @Column('bool', { nullable: false, name: 'is_active', default: true })
   isActive: boolean;
 }

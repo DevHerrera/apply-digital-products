@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -23,12 +23,13 @@
     "migration:run": "npm run build && node ./node_modules/typeorm/cli.js migration:run -d ./dist/modules/database/data-source.js",
     "migration:create": "npm run build && node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:create -d ./src/modules/database/data-source.ts ./src/modules/database/migrations/$npm_config_name",
     "migration:revert": "npm run build && node ./node_modules/typeorm/cli.js migration:revert -d ./dist/modules/database/data-source.js"
- },
+  },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/schedule": "^6.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "joi": "^18.0.0",
     "pg": "^8.16.3",
