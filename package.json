@@ -84,7 +84,8 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@products/(.*)$": "<rootDir>/modules/products/$1"
+      "^@products/(.*)$": "<rootDir>/modules/products/$1",
+      "^@shared/(.*)$": "<rootDir>/modules/shared/$1"
     }
   }
 }
