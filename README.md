@@ -1,98 +1,95 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🚀 Technical Assessment Challenge - Apply Digital
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Welcome to my **Products API** solution!  
+This project demonstrates a clean architecture, modular design, and solid backend practices. 😎
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
+## About the challange
 
-## Description
+We are building an API to fetch product information from an external service on an hourly basis. The API will expose both public and private endpoints:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Public endpoints: Provide general product information accessible to all users.
 
-## Project setup
+Private endpoints: Deliver detailed reports and sensitive product data for authorized users only.
 
-```bash
-$ npm install
-```
+---
+## Stack
 
-## Compile and run the project
+<img width="600" height="600" alt="44e172d3-30a7-4620-a325-7b0fd95dfc23" src="https://github.com/user-attachments/assets/f0c9528f-d909-40b3-9fb3-989d4b82cbd6" />
 
-```bash
-# development
-$ npm run start
+---
+## 🏗 Architecture Overview
 
-# watch mode
-$ npm run start:dev
+The project follows a **modular, layered architecture**:
 
-# production mode
-$ npm run start:prod
-```
 
-## Run tests
+- **Controllers** handle incoming requests and responses. 📩  
+- **Services** contain business logic and orchestrate operations. 🔧  
+- **Repositories & API Clients** interact with the database and external services. 💾  
+- **Tasks** handle scheduled operations or background jobs. ⏱️  
 
-```bash
-# unit tests
-$ npm run test
+This design ensures **scalability**, **testability**, and **maintainability**. ✨
 
-# e2e tests
-$ npm run test:e2e
+---
 
-# test coverage
-$ npm run test:cov
-```
+## 🗂 Database
 
-## Deployment
+For the database, I chose PostgreSQL over Mongoose. While I’m also proficient with MongoDB, I wanted to highlight my SQL skills for this demo.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+For simplicity, this demo uses only a single table.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+<img width="200" height="400" alt="Table ER" src="https://github.com/user-attachments/assets/63f3a4a7-0ce0-4c8a-8d83-80b959ccdb84" />
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+---
+## 🔐 Auth
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+For authentication, this demo uses the Passport library. Since the authentication is simple, you only need to include an Authorization header with a token. 
+You can obtain a token from the public endpoint: `/auth/get-token`
 
-## Resources
+--- 
+## Comments and considerations
 
-Check out a few resources that may come in handy when working with NestJS:
+One of the main requirements is to fetch data every hour. That’s great for production, but for demo and development purposes, I’ve added an environment variable to control the interval.  
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+By default, it’s set to fetch every **10 seconds** to make testing easier. You can adjust it using the `CONTENTFUL_FETCH_INTERVAL` variable, either in the `docker-compose.yml` file or in your `.env` file.  
 
-## Support
+I’d recommend leaving it as-is unless you have a specific reason to change it.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+---
+## 🚀 Running the Project
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Let’s get started!  
 
-## License
+I’ve made it super simple — just run:  
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+docker-compose up -d
+
+
+## Running Outside Docker
+
+If you prefer to run the project without Docker, you can set the following environment variables. The app will work smoothly with them:
+
+```dotenv
+## Database
+DATABASE_HOST=db.rtpvacxygpuhvxojnknt.supabase.co
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=superstrongPassword
+DATABASE_NAME=postgres
+# Contentful API
+CONTENTFUL_BASE_URL=https://cdn.contentful.com/spaces/
+CONTENTFUL_SPACE_ID=9xs1613l9f7v
+CONTENTFUL_ACCESS_TOKEN=I-ThsT55eE_B3sCUWEQyDT4VqVO3x__20ufuie9usns
+CONTENTFUL_ENVIRONMENT=master
+CONTENTFUL_CONTENT_TYPE=product
+CONTENTFUL_FETCH_INTERVAL=*/10 * * * * *  # Every 10 seconds
+JWT_SECRET=superSecretAndSecure
+JWT_EXPIRES_IN=1d
+
+
+
+
+
+
+
