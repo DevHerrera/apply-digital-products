@@ -1,3 +1,4 @@
+import { PublicAccess } from '@auth/decorators';
 import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
 import {
   ApiExtraModels,
@@ -30,6 +31,7 @@ export class ProductsController {
       ],
     },
   })
+  @PublicAccess()
   @Get()
   findProducts(@Query() filters: FindProductsFilterDto) {
     return this.productService.getProducts(filters);
@@ -61,6 +63,7 @@ export class ProductsController {
     },
   })
   @Delete(':sku')
+  @PublicAccess()
   async softDeleteProduct(@Param('sku') sku: string) {
     await this.productService.softDeleteProduct(sku);
     return { message: `Product with SKU ${sku} has been deleted (soft).` };

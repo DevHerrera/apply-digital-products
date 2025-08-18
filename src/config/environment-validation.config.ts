@@ -15,8 +15,6 @@ export const validationSchema = Joi.object({
   CONTENTFUL_CONTENT_TYPE: Joi.string(),
 
   // JWT
-  //JWT_SECRET: Joi.string().optional(),
-  //JWT_EXPIRES_IN: Joi.string().default('1h'),
-  //JWT_REFRESH_SECRET: Joi.string().optional(),
-  //JWT_REFRESH_EXPIRES_IN: Joi.string().default('7d'),
+  JWT_SECRET: Joi.string().optional(),
+  JWT_EXPIRES_IN: Joi.string().default('1h'),
 });

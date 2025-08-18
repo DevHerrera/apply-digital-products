@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import { ProductRepository } from '@products/repositories';
 import { Product } from '@products/entities';
 import { IProduct } from '@products/interfaces';
+import { FindProductsFilterDto } from '@products/dtos';
 
 describe('ProductRepository', () => {
   let repo: ProductRepository;
@@ -49,35 +50,136 @@ describe('ProductRepository', () => {
   });
 
   describe('Find by filters', () => {
-    it('should create a new product if it does not exist', async () => {
-      const newProduct: IProduct = {
-        ...baseProduct,
-        sku: 'SKU_NEW',
-        name: 'New Product',
-      };
-      const result = await repo.findOrSync(newProduct);
+    it('should return all products with no filters', async () => {
+      const filters: FindProductsFilterDto = { page: 1, size: 5 };
+      const result = await repo.findByFilters(filters);
 
-      expect(result.sku).toBe('SKU_NEW');
-      expect(result.name).toBe('New Product');
-
-      const found = await repo.findOne({ where: { sku: 'SKU_NEW' } });
-      expect(found).not.toBeNull();
-      expect(found?.name).toBe('New Product');
+      expect(result.count).toBeGreaterThanOrEqual(3);
+      expect(result.data.length).toBe(3);
     });
 
-    it('should update an existing product', async () => {
-      const updatedProduct: IProduct = {
-        ...baseProduct,
-        name: 'Updated Name',
-        sku: 'SKU1', // existing SKU
+    it('should filter by SKU', async () => {
+      const filters: FindProductsFilterDto = { sku: 'SKU2', page: 1, size: 5 };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.length).toBe(1);
+      expect(result.data[0].sku).toBe('SKU2');
+    });
+
+    it('should filter by name (ILIKE)', async () => {
+      const filters: FindProductsFilterDto = {
+        name: 'another',
+        page: 1,
+        size: 5,
       };
-      const result = await repo.findOrSync(updatedProduct);
+      const result = await repo.findByFilters(filters);
 
-      expect(result.name).toBe('Updated Name');
+      expect(result.data.length).toBe(1);
+      expect(result.data[0].name).toBe('Another Product');
+    });
 
-      const found = await repo.findOne({ where: { sku: 'SKU1' } });
-      expect(found).not.toBeNull();
-      expect(found?.name).toBe('Updated Name');
+    it('should filter by brand', async () => {
+      const filters: FindProductsFilterDto = {
+        brand: 'BrandB',
+        page: 1,
+        size: 5,
+      };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.length).toBe(1);
+      expect(result.data[0].brand).toBe('BrandB');
+    });
+
+    it('should filter by model', async () => {
+      const filters: FindProductsFilterDto = {
+        model: 'ModelX',
+        page: 1,
+        size: 5,
+      };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should filter by category', async () => {
+      const filters: FindProductsFilterDto = {
+        category: 'Category1',
+        page: 1,
+        size: 5,
+      };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should filter by color', async () => {
+      const filters: FindProductsFilterDto = {
+        color: 'White',
+        page: 1,
+        size: 5,
+      };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.length).toBe(1);
+      expect(result.data[0].color).toBe('White');
+    });
+
+    it('should filter by price range', async () => {
+      const filters: FindProductsFilterDto = {
+        minPrice: 100,
+        maxPrice: 200,
+        page: 1,
+        size: 5,
+      };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.every((p) => p.price >= 100 && p.price <= 200)).toBe(
+        true,
+      );
+    });
+
+    it('should filter by stock range', async () => {
+      const filters: FindProductsFilterDto = {
+        minStock: 10,
+        maxStock: 20,
+        page: 1,
+        size: 5,
+      };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.every((p) => p.stock >= 10 && p.stock <= 20)).toBe(
+        true,
+      );
+    });
+
+    it('should filter by currency', async () => {
+      const filters: FindProductsFilterDto = {
+        currency: 'USD',
+        page: 1,
+        size: 5,
+      };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.every((p) => p.currency === 'USD')).toBe(true);
+    });
+
+    it('should return empty array if no match', async () => {
+      const filters: FindProductsFilterDto = {
+        sku: 'NON_EXISTENT',
+        page: 1,
+        size: 5,
+      };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data).toEqual([]);
+      expect(result.count).toBe(0);
+    });
+
+    it('should paginate correctly', async () => {
+      const filters: FindProductsFilterDto = { page: 1, size: 2 };
+      const result = await repo.findByFilters(filters);
+
+      expect(result.data.length).toBe(2);
     });
   });
 

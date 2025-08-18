@@ -23,6 +23,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@products/*": ["src/modules/products/*"],
+      "@auth/*": ["src/modules/auth/*"],
       "@shared/*": ["src/modules/shared/*"],
       "@config/*": ["src/config/*"],
       "@database/*": ["src/modules/database/*"]

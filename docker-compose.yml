@@ -18,7 +18,8 @@ services:
       CONTENTFUL_ENVIRONMENT: master
       CONTENTFUL_CONTENT_TYPE: product
       CONTENTFUL_FETCH_INTERVAL: "*/30 * * * * *"
-
+      JWT_SECRET: superSecretAndSecure 
+      JWT_EXPIRES_IN: 1d
 
     depends_on:
       - postgres
