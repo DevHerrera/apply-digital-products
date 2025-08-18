@@ -2,7 +2,7 @@ import { DatabaseModule } from '@database/database.module';
 import { Module } from '@nestjs/common';
 import { ProductsModule } from '@products/products.module';
 import { ConfigModule } from '@nestjs/config';
-import { validationSchema } from './config/config.validation';
+import { validationSchema } from './config/environment-validation.config';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
