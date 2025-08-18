@@ -2,7 +2,6 @@ import { DataSource } from 'typeorm';
 import { ProductRepository } from '@products/repositories';
 import { Product } from '@products/entities';
 import { IProduct } from '@products/interfaces';
-import { FindProductsFilterDto } from '@products/dtos';
 
 describe('ProductRepository', () => {
   let repo: ProductRepository;

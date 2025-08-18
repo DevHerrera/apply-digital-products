@@ -48,12 +48,14 @@ export class FindProductsFilterDto {
   color?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @ApiPropertyOptional({ description: 'Minimum price filter', example: 100 })
   minPrice?: number;
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiPropertyOptional({ description: 'Maximum price filter', example: 1000 })
   maxPrice?: number;
 
@@ -67,15 +69,18 @@ export class FindProductsFilterDto {
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiPropertyOptional({ description: 'Minimum stock filter', example: 10 })
   minStock?: number;
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiPropertyOptional({ description: 'Maximum stock filter', example: 100 })
   maxStock?: number;
 
   @IsInt()
+  @Type(() => Number)
   @Min(1)
   @ApiProperty({
     description: 'Page number (must be >= 1)',
@@ -85,6 +90,7 @@ export class FindProductsFilterDto {
   page: number;
 
   @IsInt()
+  @Type(() => Number)
   @Min(1)
   @Max(5) // Only 5 products per page are supported
   @ApiProperty({

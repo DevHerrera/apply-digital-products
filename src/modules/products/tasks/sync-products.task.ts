@@ -1,19 +1,33 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { CronJob } from 'cron';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { ContentfulApiClient } from '@products/api-clients';
 import { ProductRepository } from '@products/repositories';
+import { ConfigService } from '@nestjs/config';
+import { CronExpression } from '@nestjs/schedule';
 
 @Injectable()
-export class SyncProductsTask {
+export class SyncProductsTask implements OnModuleInit {
   private readonly logger = new Logger(SyncProductsTask.name);
 
   constructor(
     private readonly productRepository: ProductRepository,
     private readonly contentfulClient: ContentfulApiClient,
+    private readonly config: ConfigService,
+    private readonly schedulerRegistry: SchedulerRegistry,
   ) {}
 
-  @Cron(CronExpression.EVERY_HOUR) // Move to a env variable
-  async handleCron() {
+  onModuleInit() {
+    const interval =
+      this.config.get<string>('CONTENTFUL_FETCH_INTERVAL') ||
+      CronExpression.EVERY_HOUR;
+
+    const job = new CronJob(interval, () => this.handleCron());
+    this.schedulerRegistry.addCronJob('syncProductsJob', job);
+    job.start();
+  }
+
+  private async handleCron() {
     this.logger.log('Fetching products from Contentful...');
     try {
       const data = await this.contentfulClient.fetchProducts();
