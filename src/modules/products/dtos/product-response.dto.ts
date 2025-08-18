@@ -22,7 +22,7 @@ export class ProductResponseDto {
   @ApiProperty({ example: 299.99 })
   price: number;
 
-  @ApiProperty({ example: 'USD', description: 'Currency code (ISO 4217)' })
+  @ApiProperty({ example: 'USD', description: 'Currency code' })
   currency: string;
 
   @ApiProperty({ example: 42 })

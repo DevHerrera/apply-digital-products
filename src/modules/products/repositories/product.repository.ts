@@ -6,8 +6,10 @@ import { FindProductsFilterDto } from '@products/dtos';
 
 @Injectable()
 export class ProductRepository extends Repository<Product> {
+  private likeOperator: string;
   constructor(datasource: DataSource) {
     super(Product, datasource.createEntityManager());
+    this.likeOperator = datasource.options.type === 'sqlite' ? 'LIKE' : 'ILIKE';
   }
 
   public async findOrSync(productData: IProduct): Promise<Product> {
@@ -47,25 +49,33 @@ export class ProductRepository extends Repository<Product> {
     }
 
     if (name !== undefined) {
-      query.andWhere('product.name ILIKE :name', { name: `%${name}%` });
+      query.andWhere(`product.name ${this.likeOperator} :name`, {
+        name: `%${name}%`,
+      });
     }
 
     if (brand !== undefined) {
-      query.andWhere('product.brand ILIKE :brand', { brand: `%${brand}%` });
+      query.andWhere(`product.brand ${this.likeOperator} :brand`, {
+        brand: `%${brand}%`,
+      });
     }
 
     if (model !== undefined) {
-      query.andWhere('product.model ILIKE :model', { model: `%${model}%` });
+      query.andWhere(`product.model ${this.likeOperator} :model`, {
+        model: `%${model}%`,
+      });
     }
 
     if (category !== undefined) {
-      query.andWhere('product.category ILIKE :category', {
+      query.andWhere(`product.category ${this.likeOperator} :category`, {
         category: `%${category}%`,
       });
     }
 
     if (color !== undefined) {
-      query.andWhere('product.color ILIKE :color', { color: `%${color}%` });
+      query.andWhere(`product.color ${this.likeOperator} :color`, {
+        color: `%${color}%`,
+      });
     }
 
     if (minPrice !== undefined) {
