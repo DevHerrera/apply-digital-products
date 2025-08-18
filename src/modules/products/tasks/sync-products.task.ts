@@ -12,7 +12,7 @@ export class SyncProductsTask {
     private readonly contentfulClient: ContentfulApiClient,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS) // Move to a env variable
+  @Cron(CronExpression.EVERY_HOUR) // Move to a env variable
   async handleCron() {
     this.logger.log('Fetching products from Contentful...');
     try {
