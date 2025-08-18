@@ -3,6 +3,7 @@ import { ProductsController } from '@products/controllers';
 import { ProductService } from '@products/services';
 import { FindProductsFilterDto, ProductResponseDto } from '@products/dtos';
 import { PaginatedResponseDto } from '@shared/dtos';
+import { NotFoundException } from '@nestjs/common';
 
 describe('ProductsController', () => {
   let controller: ProductsController;
@@ -16,6 +17,7 @@ describe('ProductsController', () => {
           provide: ProductService,
           useValue: {
             getProducts: jest.fn(),
+            softDeleteProduct: jest.fn(),
           },
         },
       ],
@@ -92,5 +94,29 @@ describe('ProductsController', () => {
     expect(result).toEqual(mockResponse);
     expect(service['getProducts']).toHaveBeenCalledWith(filters);
     expect(service['getProducts']).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call softDeleteProduct and return success', async () => {
+    const sku = 'SKU123';
+    (service.softDeleteProduct as jest.Mock).mockResolvedValue(undefined);
+
+    await expect(controller.softDeleteProduct(sku)).resolves.toEqual({
+      message: 'Product with SKU SKU123 has been deleted (soft).',
+    });
+    expect(service['softDeleteProduct']).toHaveBeenCalledWith(sku);
+    expect(service['softDeleteProduct']).toHaveBeenCalledTimes(1);
+  });
+
+  it('should throw NotFoundException if product does not exist', async () => {
+    const sku = 'SKU999';
+    (service['softDeleteProduct'] as jest.Mock).mockRejectedValue(
+      new NotFoundException('Product not found'),
+    );
+
+    await expect(controller.softDeleteProduct(sku)).rejects.toThrow(
+      NotFoundException,
+    );
+    expect(service['softDeleteProduct']).toHaveBeenCalledWith(sku);
+    expect(service['softDeleteProduct']).toHaveBeenCalledTimes(1);
   });
 });

@@ -42,7 +42,9 @@ export class ProductRepository extends Repository<Product> {
       size,
     } = filters;
 
-    const query = this.createQueryBuilder('product');
+    const query = this.createQueryBuilder('product').where(
+      'product.is_active = true',
+    );
 
     if (sku !== undefined) {
       query.andWhere('product.sku = :sku', { sku });

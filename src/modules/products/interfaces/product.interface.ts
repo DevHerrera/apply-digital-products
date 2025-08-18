@@ -8,5 +8,4 @@ export interface IProduct {
   price: number;
   currency: string;
   stock: number;
-  isActive: boolean;
 }
