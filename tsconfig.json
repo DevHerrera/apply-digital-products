@@ -24,6 +24,7 @@
     "paths": {
       "@products/*": ["src/modules/products/*"],
       "@auth/*": ["src/modules/auth/*"],
+      "@reports/*": ["src/modules/reports/*"],
       "@shared/*": ["src/modules/shared/*"],
       "@config/*": ["src/config/*"],
       "@database/*": ["src/modules/database/*"]

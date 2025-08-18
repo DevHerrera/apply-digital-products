@@ -95,6 +95,7 @@
     "moduleNameMapper": {
       "^@products/(.*)$": "<rootDir>/modules/products/$1",
       "^@auth/(.*)$": "<rootDir>/modules/auth/$1",
+      "^@reports/(.*)$": "<rootDir>/modules/reports/$1",
       "^@shared/(.*)$": "<rootDir>/modules/shared/$1"
     }
   }

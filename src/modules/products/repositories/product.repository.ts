@@ -3,6 +3,12 @@ import { Product } from '@products/entities';
 import { Injectable } from '@nestjs/common';
 import { IProduct } from '@products/interfaces';
 import { FindProductsFilterDto } from '@products/dtos';
+import {
+  DeletedProductsReportResponseDto,
+  ProductsReportFilterDto,
+  ProductsReportResponseDto,
+  ProductsByBrandResponseDto,
+} from '@reports/dtos';
 
 @Injectable()
 export class ProductRepository extends Repository<Product> {
@@ -108,5 +114,83 @@ export class ProductRepository extends Repository<Product> {
     const [data, count] = await query.getManyAndCount();
 
     return { data, count };
+  }
+
+  async getDeletedProductsReport(): Promise<DeletedProductsReportResponseDto> {
+    const result = await this.createQueryBuilder('product')
+      .select('COUNT(*)', 'totalProducts')
+      .addSelect(
+        'SUM(CASE WHEN product.isActive = false THEN 1 ELSE 0 END)',
+        'totalDeletedProducts',
+      )
+      .addSelect(
+        'ROUND(SUM(CASE WHEN product.isActive = false THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2)',
+        'percentageDeletedProducts',
+      )
+      .getRawOne<{
+        totalProducts: string;
+        totalDeletedProducts: string;
+        percentageDeletedProducts: string;
+      }>();
+
+    return {
+      totalProducts: Number(result?.totalProducts),
+      totalDeletedProducts: Number(result?.totalDeletedProducts),
+      percentageDeletedProducts: result?.percentageDeletedProducts + '%',
+    };
+  }
+
+  async getActiveProductsReport(
+    filters: ProductsReportFilterDto,
+  ): Promise<ProductsReportResponseDto> {
+    const qb = this.createQueryBuilder('product');
+
+    if (filters.minPrice !== undefined) {
+      qb.andWhere('product.price >= :minPrice', { minPrice: filters.minPrice });
+    }
+    if (filters.maxPrice !== undefined) {
+      qb.andWhere('product.price <= :maxPrice', { maxPrice: filters.maxPrice });
+    }
+
+    if (filters.startDate) {
+      qb.andWhere('product.created_at >= :startDate', {
+        startDate: filters.startDate,
+      });
+    }
+    if (filters.endDate) {
+      qb.andWhere('product.created_at <= :endDate', {
+        endDate: filters.endDate,
+      });
+    }
+
+    // Total products matching filters
+    const productsMatched = await qb.getCount();
+
+    // Total active products matching filters
+    const activeProductsMatched = await qb
+      .clone()
+      .andWhere('product.isActive = true')
+      .getCount();
+
+    // Calculate percentage
+    const percentageActive =
+      productsMatched > 0
+        ? ((activeProductsMatched / productsMatched) * 100).toFixed(2) + '%'
+        : '0%';
+
+    return { productsMatched, activeProductsMatched, percentageActive };
+  }
+
+  async getProductsTotalByBrand(): Promise<ProductsByBrandResponseDto[]> {
+    const rows = await this.createQueryBuilder('product')
+      .select('product.brand', 'brand')
+      .addSelect('COUNT(*)', 'totalProducts')
+      .groupBy('product.brand')
+      .getRawMany<{ brand: string; totalProducts: string }>();
+
+    return rows.map((row) => ({
+      brand: row.brand,
+      totalProducts: Number(row.totalProducts),
+    }));
   }
 }

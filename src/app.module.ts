@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from '@auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '@auth/guards';
+import { ReportsModule } from '@reports/reports.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { JwtAuthGuard } from '@auth/guards';
     AuthModule,
     DatabaseModule,
     ProductsModule,
+    ReportsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',

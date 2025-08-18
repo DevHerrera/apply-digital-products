@@ -3,6 +3,7 @@ import { ProductRepository } from '@products/repositories';
 import { Product } from '@products/entities';
 import { IProduct } from '@products/interfaces';
 import { FindProductsFilterDto } from '@products/dtos';
+import { ProductsReportFilterDto } from '@reports/dtos';
 
 describe('ProductRepository', () => {
   let repo: ProductRepository;
@@ -213,6 +214,85 @@ describe('ProductRepository', () => {
       const found = await repo.findOne({ where: { sku: 'SKU1' } });
       expect(found).not.toBeNull();
       expect(found?.name).toBe('Updated Name');
+    });
+  });
+
+  describe('Reports / Aggregates', () => {
+    beforeAll(async () => {
+      await repo.save([
+        { ...baseProduct, sku: 'SKU_DEL_1', isActive: false },
+        { ...baseProduct, sku: 'SKU_DEL_2', isActive: false },
+        {
+          ...baseProduct,
+          sku: 'SKU_ACTIVE_1',
+          brand: 'BrandA',
+          isActive: true,
+        },
+        {
+          ...baseProduct,
+          sku: 'SKU_ACTIVE_2',
+          brand: 'BrandB',
+          isActive: true,
+        },
+        {
+          ...baseProduct,
+          sku: 'SKU_ACTIVE_3',
+          brand: 'BrandA',
+          isActive: true,
+        },
+      ]);
+    });
+
+    describe('getDeletedProductsReport', () => {
+      it('should return correct totals and percentage of deleted products', async () => {
+        const result = await repo.getDeletedProductsReport();
+
+        expect(result.totalProducts).toBeGreaterThanOrEqual(8);
+        expect(result.totalDeletedProducts).toBe(2);
+        expect(result.percentageDeletedProducts).toMatch(/\d+(\.\d{2})?%/);
+      });
+    });
+
+    describe('getActiveProductsReport', () => {
+      it('should return correct counts and percentage for active products with no filters', async () => {
+        const filters: ProductsReportFilterDto = {};
+        const result = await repo.getActiveProductsReport(filters);
+
+        const totalProducts = await repo.count();
+        const totalActive = await repo.count({ where: { isActive: true } });
+
+        expect(result.productsMatched).toBe(totalProducts);
+        expect(result.activeProductsMatched).toBe(totalActive);
+        expect(result.percentageActive).toBe(
+          ((totalActive / totalProducts) * 100).toFixed(2) + '%',
+        );
+      });
+
+      it('should apply price filter correctly', async () => {
+        const filters: ProductsReportFilterDto = { minPrice: 200 };
+        const result = await repo.getActiveProductsReport(filters);
+
+        const allMatch = await repo
+          .createQueryBuilder('product')
+          .where('product.isActive = true')
+          .andWhere('product.price >= :minPrice', { minPrice: 200 })
+          .getCount();
+
+        expect(result.activeProductsMatched).toBe(allMatch);
+      });
+    });
+
+    describe('getProductsTotalByBrand', () => {
+      it('should return total products grouped by brand', async () => {
+        const result = await repo.getProductsTotalByBrand();
+
+        expect(result.length).toBeGreaterThanOrEqual(2); // BrandA and BrandB
+        const brandA = result.find((r) => r.brand === 'BrandA');
+        const brandB = result.find((r) => r.brand === 'BrandB');
+
+        expect(brandA?.totalProducts).toBeGreaterThanOrEqual(3);
+        expect(brandB?.totalProducts).toBeGreaterThanOrEqual(1);
+      });
     });
   });
 });
